@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Submit New Claim";
+}
+
+<h2>Submit New Claim</h2>
+<form>
+    <div class="form-group">
+        <label for="hoursWorked">Total Hours Worked</label>
+        <input type="number" class="form-control" id="hoursWorked" placeholder="Enter hours">
+    </div>
+    <div class="form-group">
+        <label for="hourlyRate">Hourly Rate</label>
+        <input type="text" class="form-control" id="hourlyRate" placeholder="R 0.00" readonly>
+    </div>
+    <div class="form-group">
+        <label for="totalAmount">Total Amount</label>
+        <input type="text" class="form-control" id="totalAmount" placeholder="R 0.00" readonly>
+    </div>
+    <div class="form-group">
+        <label for="supportingDocs">Supporting Documents</label>
+        <input type="file" class="form-control-file" id="supportingDocs" multiple>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Claim</button>
+</form>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "My Claim";
+}
+
+<h2>My Claims</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Claim ID</th>
+            <th>Submission Date</th>
+            <th>Total Hours</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Sample data for demonstration -->
+        <tr>
+            <td>1001</td>
+            <td>2023-10-15</td>
+            <td>40</td>
+            <td>R 8,000.00</td>
+            <td><span class="badge badge-warning">Pending</span></td>
+            <td>
+                <a href="#" class="btn btn-sm btn-info">View</a>
+                <a href="#" class="btn btn-sm btn-secondary">Documents</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<a href="@Url.Action("Create", "Claim")" class="btn btn-primary">Submit New Claim</a>
