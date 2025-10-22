@@ -1,0 +1,17 @@
+﻿@model ContractMonthlyClaimSystem.Models.Claim
+
+@{
+    ViewData["Title"] = "Claim Details";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Your existing details content -->
+        </div>
+        <div class="col-md-4">
+            <!-- Add status tracking -->
+            <partial name="_StatusTracking" model="Model" />
+        </div>
+    </div>
+</div>
