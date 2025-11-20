@@ -14,24 +14,6 @@
                 </a>
             </div>
 
-            <!-- Policy Information Card -->
-            <div class="card mb-4 border-info">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Claim Policy Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Maximum Hours:</strong> 160 hours per month
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Maximum Rate:</strong> ZAR 800 per hour
-                        </div>
-                    </div>
-                    <small class="text-muted">Claims outside these limits require special approval.</small>
-                </div>
-            </div>
-
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Claim Details</h5>
@@ -43,19 +25,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="MonthYear" class="form-label">Month and Year *</label>
-                                    <input asp-for="MonthYear" class="form-control" type="month"
-                                           min="@DateTime.Now.AddMonths(-12).ToString("yyyy-MM")"
-                                           max="@DateTime.Now.ToString("yyyy-MM")"
-                                           onchange="validateMonth()" />
+                                    <label asp-for="MonthYear" class="form-label">Month and Year</label>
+                                    <input asp-for="MonthYear" class="form-control" type="month" />
                                     <span asp-validation-for="MonthYear" class="text-danger"></span>
-                                    <small class="form-text text-muted">Select claim month (up to 12 months back)</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="LecturerName" class="form-label">Your Name *</label>
-                                    <input asp-for="LecturerName" class="form-control" value="Dr. Sarah Johnson" readonly />
+                                    <label asp-for="LecturerName" class="form-label">Your Name</label>
+                                    <input asp-for="LecturerName" class="form-control" value="Dr. Sarah Johnson" />
                                     <span asp-validation-for="LecturerName" class="text-danger"></span>
                                 </div>
                             </div>
@@ -64,51 +42,34 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="HoursWorked" class="form-label">Hours Worked *</label>
+                                    <label asp-for="HoursWorked" class="form-label">Hours Worked</label>
                                     <input asp-for="HoursWorked" class="form-control" id="hoursWorked"
-                                           value="40" min="1" max="200" step="0.5"
-                                           oninput="calculateTotal(); validatePolicy();" />
+                                           value="40" oninput="calculateTotal()" />
                                     <span asp-validation-for="HoursWorked" class="text-danger"></span>
-                                    <small class="form-text text-muted">Enter hours worked (0.5 hour increments)</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="HourlyRate" class="form-label">Hourly Rate (ZAR) *</label>
+                                    <label asp-for="HourlyRate" class="form-label">Hourly Rate (ZAR)</label>
                                     <input asp-for="HourlyRate" class="form-control" id="hourlyRate"
-                                           value="550" min="100" max="1000" step="10"
-                                           oninput="calculateTotal(); validatePolicy();" />
+                                           value="550" oninput="calculateTotal()" />
                                     <span asp-validation-for="HourlyRate" class="text-danger"></span>
-                                    <small class="form-text text-muted">Standard rate: ZAR 450-650</small>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Auto-calculated Total and Policy Validation -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="alert alert-info">
-                                    <strong>Total Amount:</strong>
-                                    <h4 class="mb-0" id="totalAmount">ZAR 22,000.00</h4>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="alert" id="policyAlert">
-                                    <strong>Policy Check:</strong>
-                                    <span id="policyMessage">Within policy limits</span>
-                                </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Total Amount</label>
+                            <div class="alert alert-info">
+                                <h4 class="mb-0" id="totalAmount">ZAR 22,000.00</h4>
                             </div>
                         </div>
 
                         <div class="form-group mb-3">
                             <label asp-for="Notes" class="form-label">Notes (Optional)</label>
                             <textarea asp-for="Notes" class="form-control" rows="4"
-                                      placeholder="Any additional information about this claim (courses taught, special circumstances, etc.)..."></textarea>
+                                      placeholder="Any additional information about this claim..."></textarea>
                             <span asp-validation-for="Notes" class="text-danger"></span>
-                            <small class="form-text text-muted">Maximum 500 characters</small>
-                            <div class="text-end">
-                                <small id="charCount">0/500 characters</small>
-                            </div>
                         </div>
 
                         <hr class="my-4" />
@@ -119,19 +80,12 @@
                                 Upload timesheets, attendance registers, or other supporting documents.
                                 Maximum file size: 5MB per file. Allowed formats: PDF, DOC, DOCX, JPG, PNG.
                             </p>
-                            <div class="file-upload-area border rounded p-3 text-center">
-                                <input type="file" name="files" multiple class="form-control d-none"
-                                       id="fileInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('fileInput').click()">
-                                    <i class="fas fa-cloud-upload-alt"></i> Select Files to Upload
-                                </button>
-                                <p class="small text-muted mt-2">or drag and drop files here</p>
-                            </div>
-                            <div id="fileList" class="mt-3"></div>
+                            <input type="file" name="files" multiple class="form-control"
+                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
                         </div>
 
                         <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success btn-lg w-100" id="submitButton">
+                            <button type="submit" class="btn btn-success btn-lg w-100">
                                 <i class="fas fa-paper-plane"></i> Submit Claim
                             </button>
                         </div>
@@ -144,7 +98,6 @@
 
 @section Scripts {
     <script>
-        // Auto-calculation function
         function calculateTotal() {
             const hours = parseFloat(document.getElementById('hoursWorked').value) || 0;
             const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
@@ -155,123 +108,7 @@
             });
         }
 
-        // Policy validation function
-        function validatePolicy() {
-            const hours = parseFloat(document.getElementById('hoursWorked').value) || 0;
-            const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-            const policyAlert = document.getElementById('policyAlert');
-            const policyMessage = document.getElementById('policyMessage');
-            const submitButton = document.getElementById('submitButton');
-
-            let messages = [];
-            let alertClass = 'alert-success';
-
-            if (hours > 160) {
-                messages.push('Hours exceed maximum (160)');
-                alertClass = 'alert-warning';
-            }
-            if (rate > 800) {
-                messages.push('Rate exceeds maximum (ZAR 800)');
-                alertClass = 'alert-warning';
-            }
-            if (hours < 1) {
-                messages.push('Minimum 1 hour required');
-                alertClass = 'alert-danger';
-            }
-            if (rate < 100) {
-                messages.push('Minimum rate is ZAR 100');
-                alertClass = 'alert-danger';
-            }
-
-            if (messages.length === 0) {
-                policyMessage.textContent = 'Within policy limits';
-                policyAlert.className = 'alert alert-success';
-                submitButton.disabled = false;
-            } else {
-                policyMessage.textContent = messages.join('; ');
-                policyAlert.className = 'alert ' + alertClass;
-                submitButton.disabled = alertClass === 'alert-danger';
-            }
-        }
-
-        // Month validation
-        function validateMonth() {
-            const monthInput = document.querySelector('input[type="month"]');
-            const selectedDate = new Date(monthInput.value + '-01');
-            const oneYearAgo = new Date();
-            oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-            if (selectedDate < oneYearAgo) {
-                alert('Claims can only be submitted for the past 12 months.');
-                monthInput.value = oneYearAgo.toISOString().substring(0, 7);
-            }
-        }
-
-        // Character count for notes
-        document.getElementById('Notes').addEventListener('input', function() {
-            const charCount = this.value.length;
-            document.getElementById('charCount').textContent = charCount + '/500 characters';
-            if (charCount > 500) {
-                document.getElementById('charCount').className = 'text-danger';
-            } else {
-                document.getElementById('charCount').className = 'text-muted';
-            }
-        });
-
-        // File upload handling
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const fileList = document.getElementById('fileList');
-            fileList.innerHTML = '';
-
-            Array.from(e.target.files).forEach(file => {
-                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item d-flex justify-content-between align-items-center border rounded p-2 mb-2';
-                fileItem.innerHTML = `
-                    <div>
-                        <i class="fas fa-file"></i> ${file.name}
-                        <small class="text-muted">(${fileSize} MB)</small>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile(this)">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                fileList.appendChild(fileItem);
-            });
-        });
-
-        function removeFile(button) {
-            button.closest('.file-item').remove();
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            calculateTotal();
-            validatePolicy();
-
-            // Set max date to current month
-            const monthInput = document.querySelector('input[type="month"]');
-            const now = new Date();
-            monthInput.max = now.toISOString().substring(0, 7);
-        });
+        // Calculate total on page load
+        document.addEventListener('DOMContentLoaded', calculateTotal);
     </script>
-
-    <style>
-        .file-upload-area {
-            border: 2px dashed #dee2e6;
-            transition: border-color 0.3s ease;
-        }
-
-        .file-upload-area:hover {
-            border-color: #007bff;
-        }
-
-        .file-item {
-            background-color: #f8f9fa;
-        }
-
-        .progress-bar-custom {
-            transition: width 0.3s ease;
-        }
-    </style>
 }

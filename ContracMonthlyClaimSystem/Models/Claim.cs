@@ -110,25 +110,5 @@ namespace ContractMonthlyClaimSystem.Models
                 };
             }
         }
-        [NotMapped]
-        public bool IsWithinPolicy => HoursWorked <= 160 && HourlyRate <= 800;
-
-        [NotMapped]
-        public string PolicyValidationMessage
-        {
-            get
-            {
-                var messages = new List<string>();
-                if (HoursWorked > 160)
-                    messages.Add("Hours worked exceed maximum allowed (160 hours)");
-                if (HourlyRate > 800)
-                    messages.Add("Hourly rate exceeds maximum allowed (ZAR 800)");
-
-                return messages.Any() ? string.Join("; ", messages) : "Within policy limits";
-            }
-        }
-
-        [NotMapped]
-        public string PolicyValidationColor => IsWithinPolicy ? "text-success" : "text-danger";
     }
 }
