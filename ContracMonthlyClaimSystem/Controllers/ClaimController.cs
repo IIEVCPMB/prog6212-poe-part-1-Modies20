@@ -348,5 +348,110 @@ namespace ContractMonthlyClaimSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        // Automated policy verification for coordinators and managers
+        private (bool isValid, List<string> issues) ValidateClaimAgainstPolicies(Claim claim)
+        {
+            var issues = new List<string>();
+
+            // Hours worked policy
+            if (claim.HoursWorked > 160)
+            {
+                issues.Add($"Hours worked ({claim.HoursWorked}) exceed maximum allowed (160 hours)");
+            }
+            else if (claim.HoursWorked > 120)
+            {
+                issues.Add($"Hours worked ({claim.HoursWorked}) are above normal threshold (120 hours)");
+            }
+
+            // Hourly rate policy
+            if (claim.HourlyRate > 800)
+            {
+                issues.Add($"Hourly rate (ZAR {claim.HourlyRate}) exceeds maximum allowed (ZAR 800)");
+            }
+            else if (claim.HourlyRate > 650)
+            {
+                issues.Add($"Hourly rate (ZAR {claim.HourlyRate}) is above standard range (ZAR 450-650)");
+            }
+            else if (claim.HourlyRate < 450)
+            {
+                issues.Add($"Hourly rate (ZAR {claim.HourlyRate}) is below standard range (ZAR 450-650)");
+            }
+
+            // Total amount policy
+            if (claim.TotalAmount > 100000)
+            {
+                issues.Add($"Total amount (ZAR {claim.TotalAmount:N2}) exceeds exceptional threshold (ZAR 100,000)");
+            }
+
+            return (issues.Count == 0, issues);
+        }
+
+        // Enhanced approval method with policy checks
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveByCoordinator(int id, bool overridePolicy = false)
+        {
+            try
+            {
+                var claim = await _context.Claims.FindAsync(id);
+                if (claim == null)
+                {
+                    TempData["ErrorMessage"] = "Claim not found.";
+                    return RedirectToAction(nameof(PendingClaims));
+                }
+
+                // Automated policy check
+                var policyCheck = ValidateClaimAgainstPolicies(claim);
+
+                if (!policyCheck.isValid && !overridePolicy)
+                {
+                    TempData["PolicyIssues"] = string.Join("; ", policyCheck.issues);
+                    TempData["ClaimId"] = id;
+                    return RedirectToAction(nameof(ReviewPolicyIssues));
+                }
+
+                claim.Status = ClaimStatus.ApprovedByCoordinator;
+                claim.CoordinatorApprovedBy = "Programme Coordinator";
+                claim.CoordinatorApprovalDate = DateTime.Now;
+                claim.LastUpdated = DateTime.Now;
+
+                if (overridePolicy)
+                {
+                    claim.Notes += $"\n[Policy Override - Coordinator: {DateTime.Now:dd MMM yyyy HH:mm}]";
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Claim approved by coordinator successfully!" +
+                                           (overridePolicy ? " (Policy override applied)" : "");
+                return RedirectToAction(nameof(PendingClaims));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error approving claim: {ex.Message}";
+                return RedirectToAction(nameof(PendingClaims));
+            }
+        }
+
+        // Policy review page
+        public async Task<IActionResult> ReviewPolicyIssues()
+        {
+            if (TempData["ClaimId"] == null)
+            {
+                return RedirectToAction(nameof(PendingClaims));
+            }
+
+            var claimId = (int)TempData["ClaimId"];
+            var policyIssues = TempData["PolicyIssues"]?.ToString();
+
+            var claim = await _context.Claims.FindAsync(claimId);
+            if (claim == null)
+            {
+                return RedirectToAction(nameof(PendingClaims));
+            }
+
+            ViewBag.PolicyIssues = policyIssues?.Split(';').ToList() ?? new List<string>();
+            return View(claim);
+        }
     }
 }
